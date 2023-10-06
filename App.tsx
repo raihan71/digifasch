@@ -3,9 +3,9 @@ import { View, Text, Image, StyleSheet, StatusBar, ImageBackground} from 'react-
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AppIntroSlider from 'react-native-app-intro-slider';
 import SplashScreen from 'react-native-splash-screen'
-import Digifasch from './app/view/Digifasch';
-import dataSlide from './app/constant/slide';
-import { logoWhite } from './app/constant/img';
+import Digifasch from './src/view/Digifasch';
+import dataSlide from './src/constant/slide';
+import { logoWhite } from './src/constant/img';
 
 type Item = (typeof dataSlide)[0];
 
@@ -14,7 +14,7 @@ const App: FC = () =>  {
   useEffect( () => {
     const prepare = async () => {
         try{
-            new Promise(resolve => setTimeout(resolve,1000)); // wait for 5 secs
+            new Promise(resolve => setTimeout(resolve,1500));
         }catch(e){
             console.warn(e);
         }finally{
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
   text: {
     color: 'rgba(255, 255, 255, 0.8)',
     textAlign: 'center',
-    paddingVertical: 20,
+    padding: 10,
     fontSize: 20,
     fontFamily: 'PlusJakartaSans-VariableFont_wght'
   },
