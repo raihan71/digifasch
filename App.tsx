@@ -75,8 +75,12 @@ const App: FC = () =>  {
         renderItem={_renderItem}
         showPrevButton
         showSkipButton
+        prevLabel="Sebelumnya"
+        nextLabel="Berikutnya"
+        doneLabel="Selesai"
         onDone={_onDone}
         onSkip={_onDone}
+        skipLabel="Lewati"
         data={dataSlide}
       />
     </View>
