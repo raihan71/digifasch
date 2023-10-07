@@ -1,20 +1,25 @@
-import React, { useEffect, useState, FC } from 'react';
-import { View, Text, Image, StyleSheet, StatusBar, ImageBackground} from 'react-native';
+import React, { useEffect, useState, FC, lazy, Suspense, StrictMode } from 'react';
+import { View, Text, Image, StyleSheet, StatusBar, ImageBackground, ActivityIndicator} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AppIntroSlider from 'react-native-app-intro-slider';
 import SplashScreen from 'react-native-splash-screen'
-import Digifasch from './src/view/Digifasch';
 import dataSlide from './src/constant/slide';
 import { logoWhite } from './src/constant/img';
+const Digifasch = lazy(() => import('./src/view/Digifasch'));
 
 type Item = (typeof dataSlide)[0];
 
 const App: FC = () =>  {
   const [showRealApp, setShowRealApp] = useState(false);
   useEffect( () => {
+    let update = true;
     const prepare = async () => {
         try{
-            new Promise(resolve => setTimeout(resolve,1500));
+            new Promise(resolve => {
+              if (update) {
+                setTimeout(resolve,1500);
+              }
+            });
         }catch(e){
             console.warn(e);
         }finally{
@@ -22,7 +27,27 @@ const App: FC = () =>  {
         }
     }
     prepare();
-  });
+    return () => {
+      update = false;
+    }
+  }, []);
+
+  useEffect(() => {
+    let update = true;
+    const fetch = async () => {
+      AsyncStorage.getItem('first_time').then((value) => {
+        if (update) {
+          setShowRealApp(!!value);
+        }
+      })
+    }
+    fetch()
+      .catch(err => err)
+    return () => {
+      update = false;
+    }
+  }, [showRealApp]);
+
   const _renderItem = ({item}: {item: Item}) => {
     return (
     <ImageBackground
@@ -50,17 +75,6 @@ const App: FC = () =>  {
 
   const _keyExtractor = (item: Item) => item.title;
 
-  useEffect(() => {
-    const fetch = async () => {
-      AsyncStorage.getItem('first_time').then((value) => {
-        setShowRealApp(!!value);
-      })
-    }
-    fetch()
-      .catch(err => err)
-  }, [])
-
-
   const _onDone = async () => {
     await AsyncStorage.setItem('first_time', 'true').then(() => {
       setShowRealApp(true);
@@ -87,9 +101,11 @@ const App: FC = () =>  {
   );
 
   return (
-    <>
+  <StrictMode>
+    <Suspense fallback={<ActivityIndicator color="green" size="large" style={styles.loading} />}>
       {showRealApp ? <Digifasch /> : _renderAppSlider}
-    </>
+    </Suspense>
+  </StrictMode>
   );
 
 }
@@ -125,6 +141,15 @@ const styles = StyleSheet.create({
     flex: 2,
     justifyContent: 'flex-start',
     alignItems: 'center'
+  },
+  loading: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   logoContainer: {
     flex: 1,
