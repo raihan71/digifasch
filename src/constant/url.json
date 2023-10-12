@@ -4,5 +4,6 @@
   "DONATUR_DAFTAR": "https://app.digifasch.com/donatur/login/?eael-register=1",
   "PROYEK_DAFTAR": "https://app.digifasch.com/galang-dana/login/?eael-register=1",
   "DONATUR_PASSWORD": "https://app.digifasch.com/donatur/login/?eael-lostpassword=1",
-  "PROYEK_PASSWORD": "https://app.digifasch.com/galang-dana/login/?eael-lostpassword=1"
+  "PROYEK_PASSWORD": "https://app.digifasch.com/galang-dana/login/?eael-lostpassword=1",
+  "DONATUR_DASHBOARD": "https://app.digifasch.com/donatur/dashboard"
 }

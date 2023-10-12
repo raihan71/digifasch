@@ -35,7 +35,7 @@ const App: FC = () =>  {
   useEffect(() => {
     let update = true;
     const fetch = async () => {
-      AsyncStorage.getItem('first_time').then((value) => {
+      await AsyncStorage.getItem('first_time').then((value) => {
         if (update) {
           setShowRealApp(!!value);
         }
