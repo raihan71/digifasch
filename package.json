@@ -1,6 +1,6 @@
 {
   "name": "digifasch",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -9,7 +9,7 @@
     "start": "npx react-native start --reset-cache",
     "build:stage": "npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res",
     "build:stage:android": "cd android && gradlew assembleDebug",
-    "build:release:android": "cd android && gradlew assembleRelease --no-daemon",
+    "build:release:android": "cd android && gradlew assembleRelease",
     "test": "jest"
   },
   "dependencies": {
