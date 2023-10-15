@@ -50,12 +50,10 @@ const Digifasch: FC = () =>  {
           BackHandler.exitApp();
           setBackPressed(0);
         } else {
+          webviewRef.current?.goBack();
           setBackPressed(backPressed+1);
           ToastAndroid.show("Tap sekali lagi untuk keluar", ToastAndroid.SHORT);
-          setTimeout(() => {
-            webviewRef.current?.goBack();
-            setBackPressed(0);
-          }, 1000);
+          setTimeout(() => setBackPressed(0), 1000);
         };
       }
       return true;

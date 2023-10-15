@@ -1,16 +1,19 @@
 import React, { useEffect, useState, FC, lazy, Suspense, StrictMode } from 'react';
-import { View, Text, Image, StyleSheet, StatusBar, ImageBackground, ActivityIndicator} from 'react-native';
+import { StyleSheet, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import AppIntroSlider from 'react-native-app-intro-slider';
 import SplashScreen from 'react-native-splash-screen'
-import dataSlide from './src/constant/slide';
-import { logoWhite } from './src/constant/img';
-const Digifasch = lazy(() => import('./src/view/Digifasch'));
+import { useNetInfo } from '@react-native-community/netinfo';
+import { logoWhite, noSignal } from './src/constant/img';
 
-type Item = (typeof dataSlide)[0];
+const Digifasch = lazy(() => import('./src/view/Digifasch'));
+const SliderIntro = lazy(() => import('./src/view/SliderIntro'));
+const NoInternet = lazy(() => import('./src/view/NoInternet'));
 
 const App: FC = () =>  {
+  const info = useNetInfo();
   const [showRealApp, setShowRealApp] = useState(false);
+  const [loadApp, setLoadApp] = useState(true);
+
   useEffect( () => {
     let update = true;
     const prepare = async () => {
@@ -24,6 +27,7 @@ const App: FC = () =>  {
             console.warn(e);
         }finally{
             SplashScreen.hide();
+            setTimeout(() => setLoadApp(false), 500);
         }
     }
     prepare();
@@ -48,62 +52,28 @@ const App: FC = () =>  {
     }
   }, [showRealApp]);
 
-  const _renderItem = ({item}: {item: Item}) => {
-    return (
-    <ImageBackground
-      style={styles.container}
-      source={item?.image}
-      imageStyle={{opacity: 0.8}}
-    >
-      <View style={[styles.container, styles.imgColor]}>
-        <View style={styles.logoContainer}>
-          <Image
-            source={logoWhite}
-            style={styles.logo}
-          />
-        </View>
-        <View style={styles.titleContainer}>
-          <Text style={styles.title}>
-            {item?.title}
-          </Text>
-          <Text style={styles.text}>{item?.text}</Text>
-        </View>
-      </View>
-    </ImageBackground>
-    );
+  const handle = {
+    _onDone: async () => {
+      await AsyncStorage.setItem('first_time', 'true').then(() => {
+        setShowRealApp(true);
+      }).catch(err => err);
+    }
   };
 
-  const _keyExtractor = (item: Item) => item.title;
 
-  const _onDone = async () => {
-    await AsyncStorage.setItem('first_time', 'true').then(() => {
-      setShowRealApp(true);
-    }).catch(err => err);
-  };
-
-  const _renderAppSlider = (
-    <View style={styles.container}>
-      <StatusBar translucent backgroundColor="transparent" />
-      <AppIntroSlider
-        keyExtractor={_keyExtractor}
-        renderItem={_renderItem}
-        showPrevButton
-        showSkipButton
-        prevLabel="Sebelumnya"
-        nextLabel="Berikutnya"
-        doneLabel="Selesai"
-        onDone={_onDone}
-        onSkip={_onDone}
-        skipLabel="Lewati"
-        data={dataSlide}
-      />
-    </View>
+  const renderApp = (
+    <>
+      {info.isConnected === true ?
+        showRealApp ? <Digifasch /> : <SliderIntro styles={styles} handle={handle} img={logoWhite} />
+      : <NoInternet styles={styles} img={noSignal} />
+      }
+    </>
   );
 
   return (
   <StrictMode>
     <Suspense fallback={<ActivityIndicator color="green" size="large" style={styles.loading} />}>
-      {showRealApp ? <Digifasch /> : _renderAppSlider}
+      {!loadApp ? renderApp : ''}
     </Suspense>
   </StrictMode>
   );
@@ -160,6 +130,21 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     width: 100,
     height: 100,
+  },
+  lostContainer: {
+    flex: 1,
+    alignSelf: 'center',
+    justifyContent: 'center'
+  },
+  retry: {
+    width:100,
+    height:33,
+    backgroundColor:'#0061C1',
+    justifyContent:'center',
+    alignItems:'center',
+    borderRadius:6,
+    marginTop:10,
+    alignSelf:'center'
   }
 });
 

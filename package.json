@@ -9,11 +9,12 @@
     "start": "npx react-native start --reset-cache",
     "build:stage": "npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res",
     "build:stage:android": "cd android && gradlew assembleDebug",
-    "build:release:android": "cd android && gradlew assembleRelease",
+    "build:release:android": "cd android && gradlew assembleRelease -PstoreFile='prod.jks' -PstorePassword='pass23' -PkeyAlias='key0' -PkeyPassword='pass23'",
     "test": "jest"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.19.3",
+    "@react-native-community/netinfo": "^9.4.1",
     "@react-navigation/native": "^6.1.8",
     "@react-navigation/native-stack": "^6.9.14",
     "metro-transform-worker": "^0.79.1",
