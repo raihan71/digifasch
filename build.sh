@@ -1,0 +1,1 @@
+cd android && ./gradlew assembleRelease -PstoreFile="prod.jks" -PstorePassword="pass23" -PkeyAlias="key0" -PkeyPassword="pass23"
